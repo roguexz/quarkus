@@ -119,7 +119,8 @@ public class AppModelGradleResolver implements AppModelResolver {
         if (appModel != null && appModel.getAppArtifact().equals(appArtifact)) {
             return appModel;
         }
-        final Configuration compileCp = project.getConfigurations().getByName(JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME);
+        final Configuration compileCp = project.getConfigurations()
+                .getByName(JavaPlugin.TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME);
         final List<Dependency> extensionDeps = new ArrayList<>();
         final List<AppDependency> userDeps = new ArrayList<>();
         Map<ModuleIdentifier, ModuleVersionIdentifier> userModules = new HashMap<>();
