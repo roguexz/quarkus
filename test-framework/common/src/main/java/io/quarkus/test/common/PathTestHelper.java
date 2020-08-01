@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import io.quarkus.runtime.util.ClassPathUtils;
 
@@ -17,6 +18,7 @@ import io.quarkus.runtime.util.ClassPathUtils;
  */
 public final class PathTestHelper {
     private static final Map<String, String> TEST_TO_MAIN_DIR_FRAGMENTS = new HashMap<>();
+
     static {
         // eclipse
         TEST_TO_MAIN_DIR_FRAGMENTS.put(
@@ -45,6 +47,20 @@ public final class PathTestHelper {
         TEST_TO_MAIN_DIR_FRAGMENTS.put(
                 "classes" + File.separator + "scala" + File.separator + "test",
                 "classes" + File.separator + "scala" + File.separator + "main");
+
+        String mappings = System.getenv("ADDITIONAL_TEST_TO_MAIN_MAPPINGS");
+        if (mappings != null) {
+            Stream.of(mappings.split(","))
+                    .filter(s -> !s.isEmpty())
+                    .forEach(s -> {
+                        String[] entry = s.split(":");
+                        if (entry.length == 2) {
+                            TEST_TO_MAIN_DIR_FRAGMENTS.put(entry[0], entry[1]);
+                        } else {
+                            System.err.println("Unable to parse additional test-to-main mapping: " + s);
+                        }
+                    });
+        }
 
         // maven
         TEST_TO_MAIN_DIR_FRAGMENTS.put(
